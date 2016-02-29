@@ -1,28 +1,34 @@
 package ie.gmit.sw;
 import java.util.*;
 public class BestFirstSearch {
-	LinkedList<Node> queue = new LinkedList<Node>();
-	List<Node> closed = new ArrayList<Node>();
-	HeuristicNodeComparator sorter = new HeuristicNodeComparator();
+	
+	private List<Node> closed = new ArrayList<Node>();
+	private HeuristicNodeComparator sorter = new HeuristicNodeComparator();
+	private Queue<Node> queue = new PriorityQueue<Node>(10, sorter);
+	
 	public void search(Node node){
-		queue.addFirst(node);
+		
+		queue.offer(node);
+		
 		while(!queue.isEmpty()){
-			queue.removeFirst();
+			
+			node = queue.poll();
+			node.setVisited(true);
 			closed.add(node);
+			
 			if (node.isGoalNode()){
 				path(node);
 				System.exit(0);
 			}else{
+				
 				Node[] children = node.children();								
+				
 				for (int i = 0; i < children.length; i++) {
 					if (!children[i].isVisited()){
-						queue.addFirst(children[i]);
+						queue.offer(children[i]);
 						children[i].setParent(node);
 					}
 				}
-				Collections.sort(queue, sorter);
-				node = queue.getFirst();
-				node.setVisited(true);
 			}
 		}
 	}
